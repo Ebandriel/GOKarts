@@ -40,6 +40,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+
+	void UpdateServerState(const FGoKartMove& Move);
 	void ClearAcknowledgeMoves(FGoKartMove LastMove);
 
 	UFUNCTION(Server, Reliable, WithValidation)
