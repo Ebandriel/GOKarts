@@ -61,11 +61,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
+	void SimulateMove(FGoKartMove Move);
+
+	FGoKartMove CreateMove(float DeltaTime);
+	void ClearAcknowledgeMoves(FGoKartMove LastMove);
 
 	FVector GetAirResistance();
 	FVector GetRollingResistance();
 
-	void ApplyRotation(float DeltaTime);
+	void ApplyRotation(float DeltaTime, float SteeringT);
 
 	void UpdateLocationFromVelocity(float DeltaTime);
 
@@ -101,10 +105,12 @@ private:
 
 	UFUNCTION()
 	void OnRep_ServerState();
-	UPROPERTY(Replicated)
+
 	float Throttle;
-	UPROPERTY(Replicated)
+	
 	float SteeringThrow;
+
+	TArray<FGoKartMove> UnacknowledgedMoves;
 
 	FVector Velocity;
 };
