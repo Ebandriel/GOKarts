@@ -15,31 +15,6 @@ AGoKart::AGoKart()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
-
-void AGoKart::Server_MoveForward_Implementation(float Value)
-{
-	Throttle = Value;
-}
-
-
-void AGoKart::Server_MoveRight_Implementation(float Value)
-{
-	SteeringThrow = Value;
-}
-
-void AGoKart::MoveForward(float Value)
-{
-	Throttle = Value;
-	Server_MoveForward(Value);
-}
-
-
-void AGoKart::MoveRight(float Value)
-{
-	SteeringThrow = Value;
-	Server_MoveRight(Value);
-}
-
 // Called when the game starts or when spawned
 void AGoKart::BeginPlay()
 {
@@ -128,6 +103,29 @@ FVector AGoKart::GetRollingResistance()
 	float AccelerationDueToGravity = -GetWorld()->GetGravityZ() / 100;
 	float NormalForce = Mass * AccelerationDueToGravity;
 	return -Velocity.GetSafeNormal() * RollingResistanceCoefficient * NormalForce;
+}
+
+void AGoKart::MoveForward(float Value)
+{
+	Throttle = Value;
+	Server_MoveForward(Value);
+}
+
+
+void AGoKart::MoveRight(float Value)
+{
+	SteeringThrow = Value;
+	Server_MoveRight(Value);
+}
+
+void AGoKart::Server_MoveForward_Implementation(float Value)
+{
+	Throttle = Value;
+}
+
+void AGoKart::Server_MoveRight_Implementation(float Value)
+{
+	SteeringThrow = Value;
 }
 
 bool AGoKart::Server_MoveForward_Validate(float Value)
