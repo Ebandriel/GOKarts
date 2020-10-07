@@ -9,6 +9,7 @@ UGoKartMovementComponent::UGoKartMovementComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+	
 
 	// ...
 }
@@ -18,7 +19,6 @@ UGoKartMovementComponent::UGoKartMovementComponent()
 void UGoKartMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
 
 }
@@ -28,7 +28,6 @@ void UGoKartMovementComponent::BeginPlay()
 void UGoKartMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
 		LastMove = CreateMove(DeltaTime);
@@ -39,28 +38,32 @@ void UGoKartMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 void UGoKartMovementComponent::SimulateMove(const FGoKartMove& Move)
 {
 	FVector Force = GetOwner()->GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
-
-	Force += GetAirResistance();
+	Force += GetAirResistance();	
 	Force += GetRollingResistance();
-
 	FVector Acceleration = Force / Mass;
-
 	Velocity = Velocity + Acceleration * Move.DeltaTime;
-
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
-
 	UpdateLocationFromVelocity(Move.DeltaTime);
 }
 
 FGoKartMove UGoKartMovementComponent::CreateMove(float DeltaTime)
 {
+	UE_LOG(LogTemp, Warning, TEXT("time %f"),DeltaTime);
+	UE_LOG(LogTemp, Warning, TEXT("Steering Throw %f"),SteeringThrow);
+	UE_LOG(LogTemp, Warning, TEXT("Throttle %f"),Throttle);
+	
 	FGoKartMove Move;
 	Move.DeltaTime = DeltaTime;
 	Move.SteeringThrow = SteeringThrow;
-	Move.Throttle = Throttle;
+	Move.Throttle  = this->Throttle;
 	Move.Time = GetWorld()->TimeSeconds;
-
 	return Move;
+}
+void UGoKartMovementComponent::SetThrottle(float Val)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("check if set %f"), Val);
+	Throttle = Val;
+	UE_LOG(LogTemp, Warning, TEXT("check if set B %f"),this->Throttle);
 }
 
 FVector UGoKartMovementComponent::GetAirResistance()
@@ -95,6 +98,7 @@ void UGoKartMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 	GetOwner()->AddActorWorldOffset(Translation, true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{
+	
 		Velocity = FVector::ZeroVector;
 	}
 }

@@ -2,8 +2,8 @@
 
 
 #include "GoKart.h"
-#include "Kismet/GameplayStatics.h"
 #include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 
@@ -15,16 +15,19 @@ AGoKart::AGoKart()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	SetReplicates(true);
-	SetReplicateMovement(false);
 	MovementComponent = CreateDefaultSubobject<UGoKartMovementComponent>(TEXT("MovementComponent"));
 	MovementReplicator = CreateDefaultSubobject<UGoKartReplicationComponent>(TEXT("MovementReplicator"));
-
+	bReplicates = true;
+	SetReplicateMovement(false);
+	
+	
 }
 // Called when the game starts or when spawned
 void AGoKart::BeginPlay()
 {
 	Super::BeginPlay();
+	
+
 	if (HasAuthority())
 	{
 		NetUpdateFrequency = 1;
@@ -70,18 +73,16 @@ void AGoKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AGoKart::MoveForward(float Value)
 {
+
 	if (MovementComponent == nullptr) return;
 
-	MovementComponent->SetThrottle(Value);
-	
+	MovementComponent->SetThrottle(Value);	
 }
 
 
 void AGoKart::MoveRight(float Value)
 {
 	if (MovementComponent == nullptr) return;
-
-	MovementComponent->SetSteeringThrow(Value);
-	
+	MovementComponent->SetSteeringThrow(Value);	
 }
 

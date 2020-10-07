@@ -21,6 +21,7 @@ struct FGoKartMove
 		float DeltaTime;
 	UPROPERTY()
 		float Time;
+
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -46,7 +47,7 @@ public:
 	FVector GetVelocity() { return Velocity; };
 	void SetVelocity(FVector Val) { Velocity = Val; };
 
-	void SetThrottle(float Val) { Throttle = Val; };
+	void SetThrottle(float Val);
 	void SetSteeringThrow(float Val) { SteeringThrow = Val; };
 
 
@@ -83,4 +84,5 @@ private:
 	FGoKartMove LastMove;
 	float Throttle;
 	float SteeringThrow;
+
 };

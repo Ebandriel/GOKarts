@@ -66,13 +66,13 @@ private:
 	float VelocityToDerivative();
 
 	UFUNCTION(Server, Reliable, WithValidation)
-		void Server_SendMove(FGoKartMove Move);
+	void Server_SendMove(FGoKartMove Move);
 
 	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
-		FGoKartState ServerState;
+	FGoKartState ServerState;
 
 	UFUNCTION()
-		void OnRep_ServerState();
+	void OnRep_ServerState();
 	void AutonomousProxy_OnRep_ServerState();
 	void SimulatedProxy_OnRep_ServerState();
 
@@ -81,11 +81,12 @@ private:
 	float ClientTimeBetweenLastUpdates;
 	FTransform ClientStartTransform;
 	FVector ClientStartVelocity;
+	float ClientSimulatedTime;
 
 	UPROPERTY()
-		UGoKartMovementComponent* MovementComponent;
+	UGoKartMovementComponent* MovementComponent;
 	UPROPERTY()
-		USceneComponent* MeshOffsetRoot;
+	USceneComponent* MeshOffsetRoot;
 	UFUNCTION(BlueprintCallable)
-		void SetMeshOffsetRoot(USceneComponent* Root) { MeshOffsetRoot = Root; }
+	void SetMeshOffsetRoot(USceneComponent* Root) { MeshOffsetRoot = Root; }
 };

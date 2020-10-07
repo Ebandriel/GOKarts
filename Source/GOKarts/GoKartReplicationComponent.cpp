@@ -70,7 +70,7 @@ void UGoKartReplicationComponent::ClearAcknowledgeMoves(FGoKartMove LastMove)
 void UGoKartReplicationComponent::Server_SendMove_Implementation(FGoKartMove Move)
 {
 	if (MovementComponent == nullptr) return;
-
+	ClientSimulatedTime += Move.DeltaTime;
 	MovementComponent->SimulateMove(Move);
 
 	UpdateServerState(Move);
@@ -78,7 +78,13 @@ void UGoKartReplicationComponent::Server_SendMove_Implementation(FGoKartMove Mov
 
 bool UGoKartReplicationComponent::Server_SendMove_Validate(FGoKartMove Move)
 {
-	return true; //TODO: Make better validation
+	float ProposedTime = ClientSimulatedTime + Move.DeltaTime;
+	bool ClientNotRunningAhead = ProposedTime < GetWorld()->TimeSeconds;
+	if (!ClientNotRunningAhead) {
+		UE_LOG(LogTemp, Error, TEXT("Client is running too fast."))
+			return false;
+	}
+	return true;
 }
 
 void UGoKartReplicationComponent::UpdateServerState(const FGoKartMove& Move)
@@ -100,6 +106,7 @@ void UGoKartReplicationComponent::ClientTick(float DeltaTime)
 	FHermiteCubicSpline Spline = CreateSpline();
 	InterpolateLocation(Spline, LerpRatio);
 	InterpolateVelocity(Spline, LerpRatio);
+	InterpolateRotation(LerpRatio);
 }
 
 FHermiteCubicSpline UGoKartReplicationComponent::CreateSpline()
